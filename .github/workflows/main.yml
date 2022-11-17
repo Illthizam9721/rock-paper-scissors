@@ -1,0 +1,34 @@
+name: second file
+on: 
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: check disk space
+      run: df -h 
+
+    - name: checkout github main branch 
+      uses: actions/checkout@v2
+
+    - name: setup sdk
+      uses: actions/setup-java@v1
+      with: 
+          java-version: 1.8
+
+    - name: build maven pkg
+      run: echo "mvn -B package --file pom.xml"
+
+    - name: caching maven package
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{(runner.os)}}-m2-${{hashfiles('**/pom.xml')}}
+
+    - name: environment
+      run: env
+
+
